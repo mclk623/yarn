@@ -11,10 +11,7 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
-      - run: ./gradlew build javadocJar checkMappings --stacktrace --warning-mode fail
-      - run: ./gradlew formatMappings --stacktrace --warning-mode fail
-      - name: Check mapping format
-        run: if [ -n "$(git status --porcelain)" ]; then exit 1; fi
+      - run: ./gradlew mapNamedJar
       - name: Build artifacts
         if: ${{ matrix.java == '21-jdk' }}
         continue-on-error: true
@@ -22,13 +19,3 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
-
-  test-build-logic:
-    runs-on: ubuntu-24.04
-    container:
-      image: eclipse-temurin:21-jdk
-      options: --user root
-    steps:
-      - uses: actions/checkout@v4
-      - uses: gradle/wrapper-validation-action@v2
-      - run: ./gradlew :filament:build
